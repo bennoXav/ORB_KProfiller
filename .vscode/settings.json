@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "stdlib.h": "c",
+        "raygui.h": "c",
+        "_mingw.h": "c",
+        "shellapi.h": "c"
+    }
+}
