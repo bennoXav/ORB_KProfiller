@@ -48,19 +48,35 @@ int main(void)
     bool closeButton = false;
     bool running = false;
     //teste de input direto
-    int testeinput[18 * 5] = {1, 1, 1, 2, 3, 1, 1, 1, 2, 1, 1, 1, 2, 3, 1, 1, 1, 2,
-                              1, 1, 1, 2, 3, 1, 1, 1, 2, 1, 1, 1, 2, 3, 1, 1, 1, 2,
-                              1, 1, 1, 2, 3, 1, 1, 1, 2, 1, 1, 1, 2, 3, 1, 1, 1, 2,
-                              1, 1, 1, 2, 3, 1, 1, 1, 2, 1, 1, 1, 2, 3, 1, 1, 1, 2,
-                              1, 1, 1, 2, 3, 1, 1, 1, 2, 1, 1, 1, 2, 3, 1, 1, 1, 2};
+    int testeinput[18 * 7] = {
+        1, 1, 1, 2, 3, 1, 1, 1, 2, 1, 1, 1, 2, 3, 1, 1, 1, 2,
+        1, 1, 1, 2, 3, 1, 1, 1, 2, 1, 1, 1, 2, 3, 1, 1, 1, 2,
+        1, 1, 1, 2, 3, 1, 1, 1, 2, 1, 1, 1, 2, 3, 1, 1, 1, 2,
+        1, 1, 1, 2, 3, 1, 1, 1, 2, 1, 1, 1, 2, 3, 1, 1, 1, 2,
+        1, 1, 1, 2, 3, 1, 1, 1, 2, 1, 1, 1, 2, 3, 1, 1, 1, 2, 4, 4, 4, 5, 6, 4, 4, 4, 5, 4, 4, 4, 5, 6, 4, 4, 4, 5,
+        7, 7, 7, 8, 9, 7, 7, 7, 8, 7, 7, 7, 8, 9, 7, 7, 7, 8};
     size_t nelementos = sizeof(testeinput) / sizeof(int);
     int uniqueelements = UniqueElements(testeinput, nelementos);
-    int runtime = 90;
+    int runtime = 110;
     int runtimesimu;
     if (runtime > 50)
         runtimesimu = (runtime / 50) + 1;
     else
         runtimesimu = 1;
+
+    int ntasks;
+    if (uniqueelements >= 4 && uniqueelements % 4 == 0)
+        ntasks = (uniqueelements / 4);
+    else if (uniqueelements >= 4 && uniqueelements % 4 != 0)
+        ntasks = (uniqueelements / 4) + 1;
+    else
+        ntasks = 1;
+    int heightpanelcr;
+
+    if (uniqueelements < 4)
+        heightpanelcr = 4;
+    else
+        heightpanelcr = uniqueelements;
 
     //colors for simulation
     Color colors[MAX_COLORS_COUNT] = {
@@ -68,7 +84,8 @@ int main(void)
         GRAY, RED, GOLD, LIME, BLUE, VIOLET, BROWN, LIGHTGRAY, PINK, YELLOW,
         GREEN, SKYBLUE, PURPLE, BEIGE};
     Rectangle panelRec = {14, 109, (GetScreenWidth() - 29), 388};
-    Rectangle panelContentRec = {14, 110, GetScreenWidth() * runtimesimu, 373};
+    printf("%d\n\n", ntasks);
+    Rectangle panelContentRec = {14, 110, GetScreenWidth() * runtimesimu, 94 * heightpanelcr};
     Vector2 panelScroll = {99, 0};
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -234,20 +251,20 @@ int main(void)
 
             for (int i = 0; i < uniqueelements; i++)
             {
-                DrawText(TextFormat("Task %02i", i + 1), 20 + panelRec.x + panelScroll.x, 200 + 80 * i, 20, BLACK);
-                DrawLine(120 + panelRec.x + panelScroll.x, 220 + 80 * i, ((GetScreenWidth() - 29) * runtimesimu) + panelRec.x + panelScroll.x, 220 + 80 * i, BLACK);
+                DrawText(TextFormat("Task %02i", i + 1), 20 + panelRec.x + panelScroll.x, 80 + 80 * i + panelRec.y + panelScroll.y, 20, BLACK);
+                DrawLine(120 + panelRec.x + panelScroll.x, 100 + 80 * i + panelRec.y + panelScroll.y, ((GetScreenWidth() - 29) * runtimesimu) + panelRec.x + panelScroll.x, 100 + 80 * i + panelRec.y + panelScroll.y, BLACK);
             }
 
             for (int i = 0; i < sizeof(testeinput) / sizeof(int); i++)
             {
-                DrawRectangle(120 + 20 * i + panelRec.x + panelScroll.x, 200 + 80 * (testeinput[i] - 1), 20, 20, colors[testeinput[i]]);
-                DrawRectangleLinesEx((Rectangle){120 + 20 * i + panelRec.x + panelScroll.x, 200 + 80 * (testeinput[i] - 1), 20, 20}, 1, BLACK);
+                DrawRectangle(120 + 20 * i + panelRec.x + panelScroll.x, 80 + 80 * (testeinput[i] - 1) + panelRec.y + panelScroll.y, 20, 20, colors[testeinput[i]]);
+                DrawRectangleLinesEx((Rectangle){120 + 20 * i + panelRec.x + panelScroll.x, 80 + 80 * (testeinput[i] - 1) + panelRec.y + panelScroll.y, 20, 20}, 1, BLACK);
             }
 
             for (int i = 0; i <= runtime / 5; i++)
             {
-                DrawText(TextFormat("%02i", 5 * i), 122 + 20 * i * 5 + panelRec.x + panelScroll.x, 470, 1, BLACK);
-                DrawLine(120 + 20 * i * 5 + panelRec.x + panelScroll.x, 220, 120 + 20 * i * 5 + panelRec.x + panelScroll.x, 480, BLACK);
+                DrawText(TextFormat("%02i", 5 * i), 122 + 20 * i * 5 + panelRec.x + panelScroll.x, 260 * ntasks + panelRec.y + panelScroll.y, 1, BLACK);
+                DrawLine(120 + 20 * i * 5 + panelRec.x + panelScroll.x, 100 + panelRec.y + panelScroll.y, 120 + 20 * i * 5 + panelRec.x + panelScroll.x, 270 * ntasks + panelRec.y + panelScroll.y, BLACK);
             }
             closeButton = GuiButton((Rectangle){GetScreenWidth() - 115, 110, 100, 50}, "CLOSE");
         }

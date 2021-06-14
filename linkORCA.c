@@ -237,6 +237,7 @@ int main(void)
             else
                 runtimesimu = 1;
             panelContentRec.width = GetScreenWidth() * runtimesimu;
+            //panelContentRec.heigh = 373*ntasks;
             strcpy(orcachamada, "C:/Users/jbweb/Orca_Bolsa/orca-rt-bench/bin/orca-rt-scheduler.exe");
             strcat(orcachamada, " ");
             strcat(orcachamada, runTimeMS);
