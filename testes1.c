@@ -1,22 +1,22 @@
-/*******************************************************************************************
-*   raylib [core] example - Basic window
-*
-*   Welcome to raylib!
-*
-*   To test examples, just press F6 and execute raylib_compile_execute script
-*   Note that compiled executable is placed in the same folder as .c file
-*
-*   You can find all basic examples on C:\raylib\raylib\examples folder or
-*   raylib official webpage: www.raylib.com
-*
-*   Enjoy using raylib. :)
-*
-*   This example has been created using
-*   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
-*
-*   Copyright (c) 2013-2016 Ramon Santamaria (@raysan5)
-*
-********************************************************************************************/
+/******************************************************************************
+ * This file is part of project ORCA. More information on the project
+ * can be found at the following repositories at GitHub's website.
+ *
+ * http://https://github.com/andersondomingues/orca-rt-bench
+ * https://github.com/bennoXav/ORB_KProfiller
+ *
+ * Copyright (C) 2021 João Benno Weber, <jbweber05@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+******************************************************************************/
 #define _GNU_SOURCE
 #define NUM_FRAMES 3
 #include "raylib.h"

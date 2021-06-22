@@ -1,15 +1,22 @@
-/*******************************************************************************************
-*
-*   raylib [core] example - Windows drop files
-*
-*   This example only works on platforms that support drag & drop (Windows, Linux, OSX, Html5?)
-*
-*   This example has been created using raylib 1.3 (www.raylib.com)
-*   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
-*
-*   Copyright (c) 2015 Ramon Santamaria (@raysan5)
-*
-********************************************************************************************/
+/******************************************************************************
+ * This file is part of project ORCA. More information on the project
+ * can be found at the following repositories at GitHub's website.
+ *
+ * http://https://github.com/andersondomingues/orca-rt-bench
+ * https://github.com/bennoXav/ORB_KProfiller
+ *
+ * Copyright (C) 2021 João Benno Weber, <jbweber05@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+******************************************************************************/
 #include "raylib.h"
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
@@ -19,27 +26,33 @@
 #define MAX_COLORS_COUNT 21
 int UniqueElements(int arr1[], int n);
 int *outputOrca(char *fileoutput, int runtime);
-
 char **droppedFiles = {0};
 char **fileoutput = {0};
 size_t nelementos = 0;
 int uniqueelements = 1;
 int runtime = 50;
 int runtimesimu = 1;
+int ntasks = 1;
 long size;
 char *buf;
-char ptr[200];
+char ptr[PATH_MAX];
 int testeinput[999];
-
+int heightpanelcr = 1;
+char orcachamada[200];
 int main(void)
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    char orcachamada[200];
-
     const int screenWidth = 1200;
     const int screenHeight = 650;
     InitWindow(screenWidth, screenHeight, "ORCA-RT-BENCH: Kprofiller");
+    //get current path
+    char ptr[PATH_MAX];
+    if (getcwd(ptr, sizeof(ptr)) != NULL)
+    {
+        strcat(ptr, "\\output.orca");
+        printf("Current working dir: %s\n", ptr);
+    }
     //checkboxes
     Color checkboxSelectedRM = BLACK;
     Color checkboxSelectedEDF = BLACK;
@@ -52,11 +65,6 @@ int main(void)
     bool checkboxRM = false;
     int count = 0;
     char *schedulingAlgortihm = "";
-    //input file
-
-    buf = (char *)malloc((size_t)size);
-    strcpy(ptr, getcwd(buf, (size_t)PATH_MAX));
-    strcat(ptr, "/output.orca");
     //run time text box
     char runTimeMS[MAX_INPUT_CHARS + 1] = "\0"; // NOTE: One extra space required for line ending char '\0'
     int letterCount = 0;
@@ -68,16 +76,15 @@ int main(void)
     bool runButton = false;
     bool closeButton = false;
     bool running = false;
-    //teste de input direto
     //colors for simulation
     Color colors[MAX_COLORS_COUNT] = {
         DARKGRAY, MAROON, ORANGE, DARKGREEN, DARKBLUE, DARKPURPLE, DARKBROWN,
         GRAY, RED, GOLD, LIME, BLUE, VIOLET, BROWN, LIGHTGRAY, PINK, YELLOW,
         GREEN, SKYBLUE, PURPLE, BEIGE};
     Rectangle panelRec = {14, 109, (GetScreenWidth() - 29), 388};
-    Rectangle panelContentRec = {14, 110, GetScreenWidth() * runtimesimu, 373};
+    Rectangle panelContentRec = {14, 110, GetScreenWidth() * runtimesimu, 94 * heightpanelcr};
     Vector2 panelScroll = {99, 0};
-    SetTargetFPS(60); // Set our game to run at 60 frames-per-second
+    SetTargetFPS(60);
     //--------------------------------------------------------------------------------------
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
@@ -91,12 +98,8 @@ int main(void)
 
         if (mouseonTextBox)
         {
-            // Set the window's cursor to the I-Beam
             SetMouseCursor(MOUSE_CURSOR_IBEAM);
-            // Get char pressed (unicode character) on the queue
             int key = GetCharPressed();
-
-            // Check if more characters have been pressed on the same frame
             while (key > 0)
             {
                 // NOTE: Only allow keys in range [32..125]
@@ -105,8 +108,7 @@ int main(void)
                     runTimeMS[letterCount] = (char)key;
                     letterCount++;
                 }
-
-                key = GetCharPressed(); // Check next character in the queue
+                key = GetCharPressed();
             }
             if (IsKeyPressed(KEY_BACKSPACE))
             {
@@ -122,7 +124,6 @@ int main(void)
             framesCounter++;
         else
             framesCounter = 0;
-
         //file dropped
         //----------------------------------------------------------------------------------
         if (IsFileDropped())
@@ -237,7 +238,26 @@ int main(void)
             else
                 runtimesimu = 1;
             panelContentRec.width = GetScreenWidth() * runtimesimu;
-            //panelContentRec.heigh = 373*ntasks;
+
+            if (uniqueelements >= 4 && uniqueelements % 4 == 0)
+            {
+                ntasks = (uniqueelements / 4);
+            }
+            else if (uniqueelements >= 4 && uniqueelements % 4 != 0)
+            {
+                ntasks = (uniqueelements / 4) + 1;
+            }
+            else
+            {
+                ntasks = 1;
+            }
+            int heightpanelcr;
+
+            if (uniqueelements < 4)
+                heightpanelcr = 4;
+            else
+                heightpanelcr = uniqueelements;
+            panelContentRec.height = 94 * heightpanelcr;
             strcpy(orcachamada, "C:/Users/jbweb/Orca_Bolsa/orca-rt-bench/bin/orca-rt-scheduler.exe");
             strcat(orcachamada, " ");
             strcat(orcachamada, runTimeMS);
@@ -250,6 +270,7 @@ int main(void)
             outputOrca(ptr, runtime);
             closeButton = false;
             running = true;
+            strcpy(orcachamada, "");
         }
         if (closeButton)
         {
@@ -264,25 +285,24 @@ int main(void)
             Rectangle view = GuiScrollPanel(panelRec, panelContentRec, &panelScroll);
             BeginScissorMode(view.x, view.y, view.width, view.height);
             DrawRectangle(14, 109, GetScreenWidth() * runtimesimu, 495 - 110, Fade(LIGHTGRAY, 0.2f));
-
             DrawRectangleLinesEx((Rectangle){15, 110, GetScreenWidth() * runtimesimu, 495 - 110}, 2, BLACK);
             for (int i = 0; i < uniqueelements - 1; i++)
             {
-                DrawText(TextFormat("Task %02i", i + 1), 20 + panelRec.x + panelScroll.x, 200 + 80 * i, 20, BLACK);
-                DrawLine(120 + panelRec.x + panelScroll.x, 220 + 80 * i, ((GetScreenWidth() - 29) * runtimesimu) + panelRec.x + panelScroll.x, 220 + 80 * i, BLACK);
+                DrawText(TextFormat("Task %02i", i + 1), 20 + panelRec.x + panelScroll.x, 80 + 80 * i + panelRec.y + panelScroll.y, 20, BLACK);
+                DrawLine(120 + panelRec.x + panelScroll.x, 100 + 80 * i + panelRec.y + panelScroll.y, ((GetScreenWidth() - 29) * runtimesimu) + panelRec.x + panelScroll.x, 100 + 80 * i + panelRec.y + panelScroll.y, BLACK);
             }
             for (int i = 0; i < (sizeof(testeinput) / sizeof(testeinput[0])); i++)
             {
                 if (testeinput[i] > 0 && testeinput[i] < 100)
                 {
-                    DrawRectangle(120 + 20 * i + panelRec.x + panelScroll.x, 200 + 80 * (testeinput[i] - 1), 20, 20, colors[testeinput[i]]);
-                    DrawRectangleLinesEx((Rectangle){120 + 20 * i + panelRec.x + panelScroll.x, 200 + 80 * (testeinput[i] - 1), 20, 20}, 1, BLACK);
+                    DrawRectangle(120 + 20 * i + panelRec.x + panelScroll.x, 80 + 80 * (testeinput[i] - 1) + panelRec.y + panelScroll.y, 20, 20, colors[testeinput[i]]);
+                    DrawRectangleLinesEx((Rectangle){120 + 20 * i + panelRec.x + panelScroll.x, 80 + 80 * (testeinput[i] - 1) + panelRec.y + panelScroll.y, 20, 20}, 1, BLACK);
                 }
             }
             for (int i = 0; i <= runtime / 5; i++)
             {
-                DrawText(TextFormat("%02i", 5 * i), 122 + 20 * i * 5 + panelRec.x + panelScroll.x, 470, 1, BLACK);
-                DrawLine(120 + 20 * i * 5 + panelRec.x + panelScroll.x, 220, 120 + 20 * i * 5 + panelRec.x + panelScroll.x, 480, BLACK);
+                DrawText(TextFormat("%02i", 5 * i), 122 + 20 * i * 5 + panelRec.x + panelScroll.x, 260 * ntasks + panelRec.y + panelScroll.y, 1, BLACK);
+                DrawLine(120 + 20 * i * 5 + panelRec.x + panelScroll.x, 100 + panelRec.y + panelScroll.y, 120 + 20 * i * 5 + panelRec.x + panelScroll.x, 270 * ntasks + panelRec.y + panelScroll.y, BLACK);
             }
             closeButton = GuiButton((Rectangle){GetScreenWidth() - 115, 110, 100, 50}, "CLOSE");
         }
@@ -299,7 +319,7 @@ int main(void)
     //--------------------------------------------------------------------------------------
     return 0;
 }
-// NOTE: We limit keys check to keys between 48 and 57 (only nymbers allowed)
+// Verifica se alguma tecla número está pressionada
 bool IsAnyKeyPressed()
 {
     bool keyPressed = false;
@@ -309,7 +329,7 @@ bool IsAnyKeyPressed()
 
     return keyPressed;
 }
-
+// Verifica quantos elementos únicos existem no vetor output.orca
 int UniqueElements(int arr1[], int n)
 {
     int res = 1;
@@ -324,7 +344,7 @@ int UniqueElements(int arr1[], int n)
     }
     return res;
 }
-
+//le o arquivo output.orca
 int *outputOrca(char *fileoutput, int runtime)
 {
     int i = 0;
@@ -343,11 +363,15 @@ int *outputOrca(char *fileoutput, int runtime)
             break;
         }
         token = strtok(line_buf, " ");
-        testeinput[i] = atoi(token);
-        i++;
+        if (atoi(token) != 0)
+        {
+            testeinput[i] = atoi(token);
+            i++;
+        }
     }
     nelementos = i;
     uniqueelements = UniqueElements(testeinput, nelementos);
+
     fclose(file);
     return 0;
 }

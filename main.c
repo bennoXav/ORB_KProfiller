@@ -1,15 +1,22 @@
-/*******************************************************************************************
-*
-*   raylib [core] example - Windows drop files
-*
-*   This example only works on platforms that support drag & drop (Windows, Linux, OSX, Html5?)
-*
-*   This example has been created using raylib 1.3 (www.raylib.com)
-*   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
-*
-*   Copyright (c) 2015 Ramon Santamaria (@raysan5)
-*
-********************************************************************************************/
+/******************************************************************************
+ * This file is part of project ORCA. More information on the project
+ * can be found at the following repositories at GitHub's website.
+ *
+ * http://https://github.com/andersondomingues/orca-rt-bench
+ * https://github.com/bennoXav/ORB_KProfiller
+ *
+ * Copyright (C) 2021 João Benno Weber, <jbweber05@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+******************************************************************************/
 #include "raylib.h"
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
@@ -27,6 +34,7 @@ int main(void)
     Color checkboxSelectedRM = BLACK;
     Color checkboxSelectedEDF = BLACK;
     Color checkboxSelectedLST = BLACK;
+
     char *edfAlgorithm = "The earlier the deadline of a task, the higher is its priority.";
     char *rmAlgorithm = "The higher the frequency (1/period) of a task, the higher is its priority.";
     char *lstAlgorithm = "The least amount of slack time of a task(amount of time left after work), the higher is its priority.";
@@ -53,7 +61,8 @@ int main(void)
         1, 1, 1, 2, 3, 1, 1, 1, 2, 1, 1, 1, 2, 3, 1, 1, 1, 2,
         1, 1, 1, 2, 3, 1, 1, 1, 2, 1, 1, 1, 2, 3, 1, 1, 1, 2,
         1, 1, 1, 2, 3, 1, 1, 1, 2, 1, 1, 1, 2, 3, 1, 1, 1, 2,
-        1, 1, 1, 2, 3, 1, 1, 1, 2, 1, 1, 1, 2, 3, 1, 1, 1, 2, 4, 4, 4, 5, 6, 4, 4, 4, 5, 4, 4, 4, 5, 6, 4, 4, 4, 5,
+        1, 1, 1, 2, 3, 1, 1, 1, 2, 1, 1, 1, 2, 3, 1, 1, 1, 2,
+        4, 4, 4, 5, 6, 4, 4, 4, 5, 4, 4, 4, 5, 6, 4, 4, 4, 5,
         7, 7, 7, 8, 9, 7, 7, 7, 8, 7, 7, 7, 8, 9, 7, 7, 7, 8};
     size_t nelementos = sizeof(testeinput) / sizeof(int);
     int uniqueelements = UniqueElements(testeinput, nelementos);

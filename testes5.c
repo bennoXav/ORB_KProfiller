@@ -1,25 +1,22 @@
-/*******************************************************************************************
-*
-*   raygui - Controls test
-*
-*   TEST CONTROLS:
-*       - GuiScrollPanel()
-*
-*   DEPENDENCIES:
-*       raylib 2.4  - Windowing/input management and drawing.
-*       raygui 2.0  - Immediate-mode GUI controls.
-*
-*   COMPILATION (Windows - MinGW):
-*       gcc -o $(NAME_PART).exe $(FILE_NAME) -I../../src -lraylib -lopengl32 -lgdi32 -std=c99
-*
-*   COMPILATION (Linux - gcc):
-*	gcc -o $(NAME_PART) $(FILE_NAME) -I../../src -lraylib -std=c99
-*
-*   LICENSE: zlib/libpng
-*
-*   Copyright (c) 2019 Vlad Adrian (@Demizdor) and Ramon Santamaria (@raysan5)
-*
-**********************************************************************************************/
+/******************************************************************************
+ * This file is part of project ORCA. More information on the project
+ * can be found at the following repositories at GitHub's website.
+ *
+ * http://https://github.com/andersondomingues/orca-rt-bench
+ * https://github.com/bennoXav/ORB_KProfiller
+ *
+ * Copyright (C) 2021 João Benno Weber, <jbweber05@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+******************************************************************************/
 #include "raylib.h"
 #include <stdlib.h>
 #include <unistd.h>
