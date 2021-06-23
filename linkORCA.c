@@ -26,6 +26,7 @@
 #define MAX_COLORS_COUNT 21
 int UniqueElements(int arr1[], int n);
 int *outputOrca(char *fileoutput, int runtime);
+int edfTest(char *fileoutput);
 char **droppedFiles = {0};
 char **fileoutput = {0};
 size_t nelementos = 0;
@@ -229,7 +230,7 @@ int main(void)
 
         runButton = GuiButton((Rectangle){GetScreenWidth() - 115, 445, 100, 50}, "RUN");
 
-        if (runButton && IsFileDropped() && runtime != 0 && sizeof(schedulingAlgortihm) != 0)
+        if (runButton && IsFileDropped() && runtime > 0 && strcmp("", schedulingAlgortihm) != 0)
         {
             runtime = atoi(runTimeMS);
 
@@ -271,12 +272,14 @@ int main(void)
             closeButton = false;
             running = true;
             strcpy(orcachamada, "");
+            edfTest(droppedFiles[0]);
         }
         if (closeButton)
         {
             strcpy(orcachamada, "");
             runButton = false;
             running = false;
+            memset(testeinput, 0, sizeof(testeinput));
         }
         //Scheduling simulation area
         //-----------------------------------------------------------------------------------
@@ -363,7 +366,7 @@ int *outputOrca(char *fileoutput, int runtime)
             break;
         }
         token = strtok(line_buf, " ");
-        if (atoi(token) != 0)
+        if (atoi(token) < 1000)
         {
             testeinput[i] = atoi(token);
             i++;
@@ -373,5 +376,40 @@ int *outputOrca(char *fileoutput, int runtime)
     uniqueelements = UniqueElements(testeinput, nelementos);
 
     fclose(file);
+    return 0;
+}
+
+int edfTest(char *fileoutput)
+{
+    int i = 0;
+    char line_buf[255];
+    char *token;
+    FILE *file = fopen(fileoutput, "r");
+    if (file == NULL)
+    {
+        perror("file vazia");
+        return 0;
+    }
+    while (fgets(line_buf, 255, file) != NULL)
+    {
+
+        token = strtok(line_buf, " ");
+        if (strstr(token, "#id") != NULL)
+        {
+            fgets(line_buf, 255, file);
+            token = strtok(line_buf, " ");
+            token = strtok(NULL, " ");
+            token = strtok(NULL, " ");
+            while (strstr(token, "#") == NULL)
+            {
+                printf(token);
+                printf("\n");
+                fgets(line_buf, 255, file);
+                token = strtok(line_buf, " ");
+                token = strtok(NULL, " ");
+                token = strtok(NULL, " ");
+            }
+        }
+    }
     return 0;
 }
