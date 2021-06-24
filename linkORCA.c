@@ -26,12 +26,12 @@
 #define MAX_COLORS_COUNT 21
 int UniqueElements(int arr1[], int n);
 int *outputOrca(char *fileoutput, int runtime);
-int edfTest(char *fileoutput);
+double edfTest(char *fileoutput);
 char **droppedFiles = {0};
 char **fileoutput = {0};
 size_t nelementos = 0;
 int uniqueelements = 1;
-int runtime = 50;
+int runtime = 0;
 int runtimesimu = 1;
 int ntasks = 1;
 long size;
@@ -82,6 +82,11 @@ int main(void)
         DARKGRAY, MAROON, ORANGE, DARKGREEN, DARKBLUE, DARKPURPLE, DARKBROWN,
         GRAY, RED, GOLD, LIME, BLUE, VIOLET, BROWN, LIGHTGRAY, PINK, YELLOW,
         GREEN, SKYBLUE, PURPLE, BEIGE};
+    //escalotest area
+    bool escTest = false;
+    double testresult = 0;
+    bool showtest = false;
+    //scrollbar area
     Rectangle panelRec = {14, 109, (GetScreenWidth() - 29), 388};
     Rectangle panelContentRec = {14, 110, GetScreenWidth() * runtimesimu, 94 * heightpanelcr};
     Vector2 panelScroll = {99, 0};
@@ -224,15 +229,38 @@ int main(void)
 
             schedulingAlgortihm = "LST";
         }
+        //SCHEDULABILITY test Button
+        //------------------------------------------------------------------------------------
+        if (!running)
+        {
+            escTest = GuiButton((Rectangle){15, 445, 150, 50}, "TEST SCHEDULABILITY");
+            if (escTest)
+            {
+                showtest = !showtest;
+            }
+            if (escTest && IsFileDropped() && strcmp("", schedulingAlgortihm) != 0)
+            {
+                if (checkboxEDF)
+                {
+                    testresult = edfTest(droppedFiles[0]);
+                }
+            }
+            if (showtest)
+            {
 
+                DrawRectangle(14, 115, 115, 60, Fade(DARKBLUE, 0.2f));
+                DrawRectangleLinesEx((Rectangle){15, 115, 115, 60}, 2, BLACK);
+                DrawText(TextFormat("%02.02f", testresult), 25, 120, 50, BLACK);
+                DrawText("if < 1, this system is schedulable with EDF", 135, 145, 24, BLACK);
+            }
+        }
         //Run Button && Close button
         //------------------------------------------------------------------------------------
-
+        runtime = atoi(runTimeMS);
         runButton = GuiButton((Rectangle){GetScreenWidth() - 115, 445, 100, 50}, "RUN");
 
         if (runButton && IsFileDropped() && runtime > 0 && strcmp("", schedulingAlgortihm) != 0)
         {
-            runtime = atoi(runTimeMS);
 
             if (runtime > 50)
                 runtimesimu = (runtime / 50) + 1;
@@ -272,7 +300,6 @@ int main(void)
             closeButton = false;
             running = true;
             strcpy(orcachamada, "");
-            edfTest(droppedFiles[0]);
         }
         if (closeButton)
         {
@@ -289,7 +316,7 @@ int main(void)
             BeginScissorMode(view.x, view.y, view.width, view.height);
             DrawRectangle(14, 109, GetScreenWidth() * runtimesimu, 495 - 110, Fade(LIGHTGRAY, 0.2f));
             DrawRectangleLinesEx((Rectangle){15, 110, GetScreenWidth() * runtimesimu, 495 - 110}, 2, BLACK);
-            for (int i = 0; i < uniqueelements - 1; i++)
+            for (int i = 0; i < uniqueelements; i++)
             {
                 DrawText(TextFormat("Task %02i", i + 1), 20 + panelRec.x + panelScroll.x, 80 + 80 * i + panelRec.y + panelScroll.y, 20, BLACK);
                 DrawLine(120 + panelRec.x + panelScroll.x, 100 + 80 * i + panelRec.y + panelScroll.y, ((GetScreenWidth() - 29) * runtimesimu) + panelRec.x + panelScroll.x, 100 + 80 * i + panelRec.y + panelScroll.y, BLACK);
@@ -345,6 +372,14 @@ int UniqueElements(int arr1[], int n)
         if (i == j)
             res++;
     }
+    for (int i = 1; i < n; i++)
+    {
+        if (arr1[i] == 0)
+        {
+            res--;
+            break;
+        }
+    }
     return res;
 }
 //le o arquivo output.orca
@@ -379,11 +414,14 @@ int *outputOrca(char *fileoutput, int runtime)
     return 0;
 }
 
-int edfTest(char *fileoutput)
+double edfTest(char *fileoutput)
 {
-    int i = 0;
+    double i = 0;
+    double n = 0;
+    double m = 0;
     char line_buf[255];
     char *token;
+    char *ptr;
     FILE *file = fopen(fileoutput, "r");
     if (file == NULL)
     {
@@ -400,16 +438,33 @@ int edfTest(char *fileoutput)
             token = strtok(line_buf, " ");
             token = strtok(NULL, " ");
             token = strtok(NULL, " ");
+            n = strtod(token, &ptr);
+            token = strtok(NULL, " ");
+            token = strtok(NULL, " ");
+            token = strtok(NULL, " ");
+            m = strtod(token, &ptr);
+
+            i += n / m;
+            fgets(line_buf, 255, file);
             while (strstr(token, "#") == NULL)
             {
-                printf(token);
-                printf("\n");
-                fgets(line_buf, 255, file);
                 token = strtok(line_buf, " ");
+                if (strstr(token, " ") != NULL || strstr(token, "#") != NULL || strstr(token, "\n") != NULL)
+                {
+                    break;
+                }
                 token = strtok(NULL, " ");
                 token = strtok(NULL, " ");
+                n = strtod(token, &ptr);
+                token = strtok(NULL, " ");
+                token = strtok(NULL, " ");
+                token = strtok(NULL, " ");
+                m = strtod(token, &ptr);
+                i += n / m;
+                fgets(line_buf, 255, file);
             }
+            break;
         }
     }
-    return 0;
+    return i;
 }
