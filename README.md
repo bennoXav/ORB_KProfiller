@@ -12,10 +12,14 @@ O aplicativo ORB: Kprofiller, simula a ordem de tarefas escalonadas, além de mo
 https://user-images.githubusercontent.com/65430820/123334328-50b6fb80-d519-11eb-9b77-bad12e587e32.mp4
 
 ### Schedulability Test 
+#### EDF
 Utilizando a fórmula:
 ![image](https://user-images.githubusercontent.com/65430820/123334625-befbbe00-d519-11eb-8ffd-5b4fef83ab7b.png)
 Nas tarefas: ![image](https://user-images.githubusercontent.com/65430820/123334724-e2bf0400-d519-11eb-8b99-099002e964b4.png)
 Podemos verificar que o sistema é escalonável pois (1/4 + 2/5 + 5/20 = 0.90)
-
-
+##### RM
+Utilizando a fórmula: 
+![image](https://user-images.githubusercontent.com/65430820/123680530-346bd500-d81f-11eb-8d37-20a8333ffcbb.png)
+Nas tarefas: ![image](https://user-images.githubusercontent.com/65430820/123334724-e2bf0400-d519-11eb-8b99-099002e964b4.png)
+Podemos verificar que o sistema  não é escalonável de forma eficiente com RM, pois (1/4 + 2/5 + 5/20 = 0.90) > (3*(2^(1/3) -1) = 0.78)
 
