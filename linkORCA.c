@@ -21,12 +21,13 @@
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 #include <unistd.h>
+#include <math.h>
 #include <string.h>
 #define MAX_INPUT_CHARS 3
 #define MAX_COLORS_COUNT 21
 int UniqueElements(int arr1[], int n);
 int *outputOrca(char *fileoutput, int runtime);
-double edfTest(char *fileoutput);
+double schedtest(char *fileoutput);
 char **droppedFiles = {0};
 char **fileoutput = {0};
 size_t nelementos = 0;
@@ -86,6 +87,8 @@ int main(void)
     bool escTest = false;
     double testresult = 0;
     bool showtest = false;
+    char *edftesttxt = "if < 1, then the system is schedulable with EDF";
+    double rmtesttxt;
     //scrollbar area
     Rectangle panelRec = {14, 109, (GetScreenWidth() - 29), 388};
     Rectangle panelContentRec = {14, 110, GetScreenWidth() * runtimesimu, 94 * heightpanelcr};
@@ -240,18 +243,20 @@ int main(void)
             }
             if (escTest && IsFileDropped() && strcmp("", schedulingAlgortihm) != 0)
             {
-                if (checkboxEDF)
-                {
-                    testresult = edfTest(droppedFiles[0]);
-                }
+                testresult = schedtest(droppedFiles[0]);
             }
             if (showtest)
             {
-
-                DrawRectangle(14, 115, 115, 60, Fade(DARKBLUE, 0.2f));
-                DrawRectangleLinesEx((Rectangle){15, 115, 115, 60}, 2, BLACK);
-                DrawText(TextFormat("%02.02f", testresult), 25, 120, 50, BLACK);
-                DrawText("if < 1, this system is schedulable with EDF", 135, 145, 24, BLACK);
+                DrawRectangle(14, 115, 175, 60, Fade(DARKBLUE, 0.2f));
+                DrawRectangleLinesEx((Rectangle){15, 115, 175, 60}, 2, BLACK);
+                DrawText(TextFormat("%03.04f", testresult), 25, 120, 50, BLACK);
+                if (checkboxEDF)
+                    DrawText(edftesttxt, 195, 145, 24, BLACK);
+                else if (checkboxRM)
+                {
+                    rmtesttxt = ntasks * (pow(2.0, (1.0 / ntasks)) - 1.0);
+                    DrawText(TextFormat("if <= %02.02f, then the system is schedulable with RM", rmtesttxt), 195, 145, 24, BLACK);
+                }
             }
         }
         //Run Button && Close button
@@ -265,9 +270,10 @@ int main(void)
             if (runtime > 50)
                 runtimesimu = (runtime / 50) + 1;
             else
+            {
                 runtimesimu = 1;
-            panelContentRec.width = GetScreenWidth() * runtimesimu;
-
+                panelContentRec.width = GetScreenWidth() * runtimesimu;
+            }
             if (uniqueelements >= 4 && uniqueelements % 4 == 0)
             {
                 ntasks = (uniqueelements / 4);
@@ -285,8 +291,10 @@ int main(void)
             if (uniqueelements < 4)
                 heightpanelcr = 4;
             else
+            {
                 heightpanelcr = uniqueelements;
-            panelContentRec.height = 94 * heightpanelcr;
+                panelContentRec.height = 94 * heightpanelcr;
+            }
             strcpy(orcachamada, "C:/Users/jbweb/Orca_Bolsa/orca-rt-bench/bin/orca-rt-scheduler.exe");
             strcat(orcachamada, " ");
             strcat(orcachamada, runTimeMS);
@@ -414,7 +422,7 @@ int *outputOrca(char *fileoutput, int runtime)
     return 0;
 }
 
-double edfTest(char *fileoutput)
+double schedtest(char *fileoutput)
 {
     double i = 0;
     double n = 0;
@@ -461,6 +469,7 @@ double edfTest(char *fileoutput)
                 token = strtok(NULL, " ");
                 m = strtod(token, &ptr);
                 i += n / m;
+                ntasks++;
                 fgets(line_buf, 255, file);
             }
             break;
