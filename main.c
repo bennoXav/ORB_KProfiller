@@ -30,6 +30,9 @@ int main(void)
     const int screenWidth = 1200;
     const int screenHeight = 650;
     InitWindow(screenWidth, screenHeight, "ORCA-RT-BENCH: Kprofiller");
+    //font
+    Font font = LoadFont("resources/arial.ttf");
+
     //checkboxes
     Color checkboxSelectedRM = BLACK;
     Color checkboxSelectedEDF = BLACK;
@@ -92,9 +95,9 @@ int main(void)
         DARKGRAY, MAROON, ORANGE, DARKGREEN, DARKBLUE, DARKPURPLE, DARKBROWN,
         GRAY, RED, GOLD, LIME, BLUE, VIOLET, BROWN, LIGHTGRAY, PINK, YELLOW,
         GREEN, SKYBLUE, PURPLE, BEIGE};
-    Rectangle panelRec = {14, 109, (GetScreenWidth() - 29), 388};
+    Rectangle panelRec = {14, 254, (GetScreenWidth() - 29), 590 - 204};
     printf("%d\n\n", ntasks);
-    Rectangle panelContentRec = {14, 110, GetScreenWidth() * runtimesimu, 94 * heightpanelcr};
+    Rectangle panelContentRec = {14, 255, GetScreenWidth() * runtimesimu, 94 * heightpanelcr};
     Vector2 panelScroll = {99, 0};
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -158,7 +161,7 @@ int main(void)
             DrawRectangleRoundedLines(textBox, 0.1f, 1, 2, BLUE);
         else
             DrawRectangleRoundedLines(textBox, 0.1f, 1, 2, BLACK);
-        DrawText(runTimeMS, textBox.x + 7, textBox.y + 7, 40, MAROON);
+        DrawTextEx(font, runTimeMS, (Vector2){textBox.x + 7, textBox.y + 7}, 40, 2, MAROON);
         if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && mouseOnText)
         {
             mouseonTextBox = true;
@@ -173,7 +176,7 @@ int main(void)
             {
                 // Draw blinking underscore char
                 if (((framesCounter / 60) % 2) == 0)
-                    DrawText("_", textBox.x + 10 + MeasureText(runTimeMS, 40), textBox.y + 7, 40, MAROON);
+                    DrawTextEx(font, "_", (Vector2){textBox.x + 10 + MeasureText(runTimeMS, 40), textBox.y + 3}, 40, 2, MAROON);
             }
         }
         // Dropped File Area
@@ -181,33 +184,33 @@ int main(void)
         DrawRectangleRounded((Rectangle){15, 15, screenWidth / 2 - 30, 90}, 0.1f, 1, Fade(DARKPURPLE, 0.3f));
         // DrawRectangleRoundedLines((Rectangle){15, 15, screenWidth / 2 - 15, 90}, 0.1f, 1, 1, BLACK);
         if (count == 0)
-            DrawText("Drop your data file here", 20, 20, 20, DARKGRAY);
+            DrawTextEx(font, "Drop your data file here", (Vector2){20, 20}, 20, 2, DARKGRAY);
         else
         {
-            DrawText("Dropped file:", 20, 20, 20, DARKGRAY);
+            DrawTextEx(font, "Dropped file:", (Vector2){20, 20}, 20, 2, DARKGRAY);
             DrawRectangleRounded((Rectangle){20, 60, screenWidth / 2 - 40, 40}, 0.1f, 1, Fade(DARKGRAY, 0.3f));
-            DrawText(droppedFiles[0], 90, 75, 14, DARKGRAY);
+            DrawTextEx(font, droppedFiles[0], (Vector2){90, 75}, 14, 2, DARKGRAY);
         }
         //Scheduling running time area
         //----------------------------------------------------------------------------------------
         DrawRectangleRounded((Rectangle){screenWidth / 2 + 15, 15, screenWidth / 2 - 30, 90}, 0.1f, 1, Fade(DARKPURPLE, 0.3f));
-        DrawText("Input the simulation time ", screenWidth / 2 + 20, 20, 20, DARKGRAY);
-        DrawText("Milliseconds", screenWidth * 0.75 + 60, 85, 20, DARKGRAY);
+        DrawTextEx(font, "Input the simulation time ", (Vector2){screenWidth / 2 + 20, 20}, 20, 2, DARKGRAY);
+        DrawTextEx(font, "Milliseconds", (Vector2){screenWidth * 0.75 + 60, 85}, 20, 2, DARKGRAY);
         //----------------------------------------------------------------------------------------
         //scheduling algorithm area design
         //----------------------------------------------------------------------------------------
-        DrawRectangleRounded((Rectangle){14, 499, GetScreenWidth() - 29, 41}, 0.01f, 1, Fade(DARKPURPLE, 0.2f));
-        DrawRectangleRoundedLines((Rectangle){15, 500, GetScreenWidth() - 30, 40}, 0.1f, 1, 1, checkboxSelectedRM);
-        DrawText(edfAlgorithm, 100, 512, 14, DARKGRAY);
-        DrawRectangleRounded((Rectangle){14, 544, GetScreenWidth() - 29, 41}, 0.01f, 1, Fade(DARKPURPLE, 0.2f));
-        DrawRectangleRoundedLines((Rectangle){15, 545, GetScreenWidth() - 30, 40}, 0.1f, 1, 1, checkboxSelectedEDF);
-        DrawText(rmAlgorithm, 100, 557, 14, DARKGRAY);
-        DrawRectangleRounded((Rectangle){14, 589, GetScreenWidth() - 29, 41}, 0.01f, 1, Fade(DARKPURPLE, 0.2f));
-        DrawRectangleRoundedLines((Rectangle){15, 590, GetScreenWidth() - 30, 40}, 0.1f, 1, 1, checkboxSelectedLST);
-        DrawText(lstAlgorithm, 100, 602, 14, DARKGRAY);
+        DrawRectangleRounded((Rectangle){14, 114, GetScreenWidth() - 29, 41}, 0.01f, 1, Fade(DARKPURPLE, 0.2f));
+        DrawRectangleRoundedLines((Rectangle){15, 115, GetScreenWidth() - 30, 40}, 0.1f, 1, 1, checkboxSelectedRM);
+        DrawTextEx(font, rmAlgorithm, (Vector2){100, 127}, 14, 2, DARKGRAY);
+        DrawRectangleRounded((Rectangle){14, 159, GetScreenWidth() - 29, 41}, 0.01f, 1, Fade(DARKPURPLE, 0.2f));
+        DrawRectangleRoundedLines((Rectangle){15, 160, GetScreenWidth() - 30, 40}, 0.1f, 1, 1, checkboxSelectedEDF);
+        DrawTextEx(font, edfAlgorithm, (Vector2){100, 172}, 14, 2, DARKGRAY);
+        DrawRectangleRounded((Rectangle){14, 204, GetScreenWidth() - 29, 41}, 0.01f, 1, Fade(DARKPURPLE, 0.2f));
+        DrawRectangleRoundedLines((Rectangle){15, 205, GetScreenWidth() - 30, 40}, 0.1f, 1, 1, checkboxSelectedLST);
+        DrawTextEx(font, lstAlgorithm, (Vector2){100, 217}, 14, 2, DARKGRAY);
         //  Scheduling Algorithms Checkboxes
         //-----------------------------------------------------------------------------------------
-        if (GuiCheckBox((Rectangle){30, 510, 20, 20}, "RM", checkboxRM))
+        if (GuiCheckBox((Rectangle){30, 125, 20, 20}, "RM", checkboxRM))
         {
             checkboxEDF = false;
             checkboxLST = false;
@@ -216,7 +219,7 @@ int main(void)
             checkboxSelectedEDF = BLACK;
             checkboxSelectedLST = BLACK;
         }
-        if (GuiCheckBox((Rectangle){30, 555, 20, 20}, "EDF", checkboxEDF))
+        if (GuiCheckBox((Rectangle){30, 170, 20, 20}, "EDF", checkboxEDF))
         {
             checkboxEDF = true;
             checkboxLST = false;
@@ -226,7 +229,7 @@ int main(void)
             checkboxSelectedEDF = GOLD;
             checkboxSelectedLST = BLACK;
         }
-        if (GuiCheckBox((Rectangle){30, 600, 20, 20}, "LST", checkboxLST))
+        if (GuiCheckBox((Rectangle){30, 215, 20, 20}, "LST", checkboxLST))
         {
             checkboxEDF = false;
             checkboxLST = true;
@@ -238,7 +241,7 @@ int main(void)
 
         //Run Button && Close button
         //------------------------------------------------------------------------------------
-        runButton = GuiButton((Rectangle){GetScreenWidth() - 115, 445, 100, 50}, "RUN");
+        runButton = GuiButton((Rectangle){GetScreenWidth() - 115, 590, 100, 50}, "RUN");
         if (runButton)
         {
             closeButton = false;
@@ -255,12 +258,12 @@ int main(void)
         {
             Rectangle view = GuiScrollPanel(panelRec, panelContentRec, &panelScroll);
             BeginScissorMode(view.x, view.y, view.width, view.height);
-            DrawRectangle(14, 109, GetScreenWidth() * runtimesimu, 495 - 110, Fade(LIGHTGRAY, 0.2f));
-            DrawRectangleLinesEx((Rectangle){15, 110, GetScreenWidth() * runtimesimu, 495 - 110}, 2, BLACK);
+            DrawRectangle(14, 255, GetScreenWidth() * runtimesimu, 495 - 110, Fade(LIGHTGRAY, 0.2f));
+            DrawRectangleLinesEx((Rectangle){15, 255, GetScreenWidth() * runtimesimu, 495 - 110}, 2, BLACK);
 
             for (int i = 0; i < uniqueelements; i++)
             {
-                DrawText(TextFormat("Task %02i", i + 1), 20 + panelRec.x + panelScroll.x, 80 + 80 * i + panelRec.y + panelScroll.y, 20, BLACK);
+                DrawTextEx(font, TextFormat("Task %02i", i + 1), (Vector2){20 + panelRec.x + panelScroll.x, 80 + 80 * i + panelRec.y + panelScroll.y}, 20, 2, BLACK);
                 DrawLine(120 + panelRec.x + panelScroll.x, 100 + 80 * i + panelRec.y + panelScroll.y, ((GetScreenWidth() - 29) * runtimesimu) + panelRec.x + panelScroll.x, 100 + 80 * i + panelRec.y + panelScroll.y, BLACK);
             }
 
@@ -272,10 +275,10 @@ int main(void)
 
             for (int i = 0; i <= runtime / 5; i++)
             {
-                DrawText(TextFormat("%02i", 5 * i), 122 + 20 * i * 5 + panelRec.x + panelScroll.x, 260 * ntasks + panelRec.y + panelScroll.y, 1, BLACK);
+                DrawTextEx(font, TextFormat("%02i", 5 * i), (Vector2){122 + 20 * i * 5 + panelRec.x + panelScroll.x, 260 * ntasks + panelRec.y + panelScroll.y}, 10, 2, BLACK);
                 DrawLine(120 + 20 * i * 5 + panelRec.x + panelScroll.x, 100 + panelRec.y + panelScroll.y, 120 + 20 * i * 5 + panelRec.x + panelScroll.x, 270 * ntasks + panelRec.y + panelScroll.y, BLACK);
             }
-            closeButton = GuiButton((Rectangle){GetScreenWidth() - 115, 110, 100, 50}, "CLOSE");
+            closeButton = GuiButton((Rectangle){GetScreenWidth() - 115, 255, 100, 50}, "CLOSE");
         }
         EndScissorMode();
         //END DRAWING
