@@ -9,8 +9,7 @@ Recomendando executar o arquivo "main", pois o .exe referente à "linkORCA.c" n�
 ## Funcionabilidades
 O aplicativo ORB: Kprofiller, simula a ordem de tarefas escalonadas, além de mostrar o Schedulability Test, o qual define se é possível escalonar tais tarefas com determinado algoritmo de forma eficiente
 ## Preview:  
-https://user-images.githubusercontent.com/65430820/123334328-50b6fb80-d519-11eb-9b77-bad12e587e32.mp4
-
+https://user-images.githubusercontent.com/65430820/124186449-b879c300-da92-11eb-8e12-3479ad9c91e8.mp4
 ### Schedulability Test 
 #### EDF
 Utilizando a fórmula:
