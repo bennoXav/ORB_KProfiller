@@ -75,6 +75,7 @@ int main(void)
     bool checkboxDM = false;
     int count = 0;
     char *schedulingAlgortihm = "";
+    char *schedulingAlgortihmTxt = "";
     //run time text box
     char runTimeMS[MAX_INPUT_CHARS + 1] = "\0"; // NOTE: One extra space required for line ending char '\0'
     int letterCount = 0;
@@ -194,107 +195,111 @@ int main(void)
         //----------------------------------------------------------------------------------------
         //scheduling algorithm area design
         //----------------------------------------------------------------------------------------
-        DrawRectangleRounded((Rectangle){14, 114, GetScreenWidth() / 2 - 29, 51}, 0.01f, 1, Fade(DARKPURPLE, 0.2f));
-        DrawRectangleRoundedLines((Rectangle){15, 115, GetScreenWidth() / 2 - 30, 50}, 0.1f, 1, 1, checkboxSelectedRM);
-        DrawTextRec(font, rmAlgorithm, (Rectangle){100, 118, GetScreenWidth() / 2 - 120, 220}, 16, 2, true, DARKGRAY);
-
-        DrawRectangleRounded((Rectangle){14, 169, GetScreenWidth() / 2 - 29, 51}, 0.01f, 1, Fade(DARKPURPLE, 0.2f));
-        DrawRectangleRoundedLines((Rectangle){15, 170, GetScreenWidth() / 2 - 30, 50}, 0.1f, 1, 1, checkboxSelectedEDF);
-        DrawTextRec(font, edfAlgorithm, (Rectangle){100, 185, GetScreenWidth() / 2 - 120, 220}, 16, 2, true, DARKGRAY);
-
-        DrawRectangleRounded((Rectangle){14, 224, GetScreenWidth() / 2 - 29, 51}, 0.01f, 1, Fade(DARKPURPLE, 0.2f));
-        DrawRectangleRoundedLines((Rectangle){15, 225, GetScreenWidth() / 2 - 30, 50}, 0.1f, 1, 1, checkboxSelectedLST);
-        DrawTextRec(font, lstAlgorithm, (Rectangle){100, 228, GetScreenWidth() / 2 - 120, 220}, 16, 2, true, DARKGRAY);
-
-        DrawRectangleRounded((Rectangle){screenWidth / 2 + 15, 114, GetScreenWidth() / 2 - 29, 51}, 0.01f, 1, Fade(DARKPURPLE, 0.2f));
-        DrawRectangleRoundedLines((Rectangle){screenWidth / 2 + 15, 115, GetScreenWidth() / 2 - 30, 50}, 0.1f, 1, 1, checkboxSelectedLLF);
-        DrawTextRec(font, llfAlgorithm, (Rectangle){screenWidth / 2 + 90, 118, GetScreenWidth() / 2 - 120, 220}, 16, 2, true, DARKGRAY);
-
-        DrawRectangleRounded((Rectangle){screenWidth / 2 + 15, 169, GetScreenWidth() / 2 - 29, 51}, 0.01f, 1, Fade(DARKPURPLE, 0.2f));
-        DrawRectangleRoundedLines((Rectangle){screenWidth / 2 + 15, 170, GetScreenWidth() / 2 - 30, 50}, 0.1f, 1, 1, checkboxSelectedDM);
-        DrawTextRec(font, dmAlgorithm, (Rectangle){screenWidth / 2 + 90, 185, GetScreenWidth() / 2 - 120, 220}, 16, 2, true, DARKGRAY);
-
-        //  Scheduling Algorithms Checkboxes
-        //-----------------------------------------------------------------------------------------
-        if (GuiCheckBox((Rectangle){30, 130, 20, 20}, "RM", checkboxRM))
-        {
-            checkboxEDF = false;
-            checkboxLST = false;
-            checkboxRM = true;
-            checkboxLFF = false;
-            checkboxDM = false;
-            checkboxSelectedRM = GOLD;
-            checkboxSelectedEDF = BLACK;
-            checkboxSelectedLST = BLACK;
-            checkboxSelectedLLF = BLACK;
-            checkboxSelectedDM = BLACK;
-            schedulingAlgortihm = "RM";
-        }
-        if (GuiCheckBox((Rectangle){30, 185, 20, 20}, "EDF", checkboxEDF))
-        {
-            checkboxEDF = true;
-            checkboxLST = false;
-            checkboxRM = false;
-            checkboxLFF = false;
-            checkboxDM = false;
-            checkboxSelectedRM = BLACK;
-            checkboxSelectedEDF = GOLD;
-            checkboxSelectedLST = BLACK;
-            checkboxSelectedLLF = BLACK;
-            checkboxSelectedDM = BLACK;
-
-            schedulingAlgortihm = "EDF";
-        }
-        if (GuiCheckBox((Rectangle){30, 240, 20, 20}, "LST", checkboxLST))
-        {
-            checkboxEDF = false;
-            checkboxLST = true;
-            checkboxRM = false;
-            checkboxLFF = false;
-            checkboxDM = false;
-            checkboxSelectedRM = BLACK;
-            checkboxSelectedEDF = BLACK;
-            checkboxSelectedLST = GOLD;
-            checkboxSelectedLLF = BLACK;
-            checkboxSelectedDM = BLACK;
-
-            schedulingAlgortihm = "LST";
-        }
-
-        if (GuiCheckBox((Rectangle){screenWidth / 2 + 30, 130, 20, 20}, "LLF", checkboxLFF))
-        {
-            checkboxEDF = false;
-            checkboxLST = false;
-            checkboxRM = false;
-            checkboxLFF = true;
-            checkboxDM = false;
-            checkboxSelectedRM = BLACK;
-            checkboxSelectedEDF = BLACK;
-            checkboxSelectedLST = BLACK;
-            checkboxSelectedLLF = GOLD;
-            checkboxSelectedDM = BLACK;
-
-            schedulingAlgortihm = "LLF";
-        }
-        if (GuiCheckBox((Rectangle){screenWidth / 2 + 30, 185, 20, 20}, "DM", checkboxDM))
-        {
-            checkboxEDF = false;
-            checkboxLST = false;
-            checkboxRM = false;
-            checkboxLFF = false;
-            checkboxDM = true;
-            checkboxSelectedRM = BLACK;
-            checkboxSelectedEDF = BLACK;
-            checkboxSelectedLST = BLACK;
-            checkboxSelectedLLF = BLACK;
-            checkboxSelectedDM = GOLD;
-
-            schedulingAlgortihm = "DM";
-        }
-        //SCHEDULABILITY test Button
-        //------------------------------------------------------------------------------------
         if (!running)
         {
+            DrawRectangleRounded((Rectangle){14, 114, GetScreenWidth() / 2 - 29, 51}, 0.01f, 1, Fade(DARKPURPLE, 0.2f));
+            DrawRectangleRoundedLines((Rectangle){15, 115, GetScreenWidth() / 2 - 30, 50}, 0.1f, 1, 1, checkboxSelectedRM);
+            DrawTextRec(font, rmAlgorithm, (Rectangle){100, 118, GetScreenWidth() / 2 - 120, 220}, 16, 2, true, DARKGRAY);
+
+            DrawRectangleRounded((Rectangle){14, 169, GetScreenWidth() / 2 - 29, 51}, 0.01f, 1, Fade(DARKPURPLE, 0.2f));
+            DrawRectangleRoundedLines((Rectangle){15, 170, GetScreenWidth() / 2 - 30, 50}, 0.1f, 1, 1, checkboxSelectedEDF);
+            DrawTextRec(font, edfAlgorithm, (Rectangle){100, 185, GetScreenWidth() / 2 - 120, 220}, 16, 2, true, DARKGRAY);
+
+            DrawRectangleRounded((Rectangle){14, 224, GetScreenWidth() / 2 - 29, 51}, 0.01f, 1, Fade(DARKPURPLE, 0.2f));
+            DrawRectangleRoundedLines((Rectangle){15, 225, GetScreenWidth() / 2 - 30, 50}, 0.1f, 1, 1, checkboxSelectedLST);
+            DrawTextRec(font, lstAlgorithm, (Rectangle){100, 228, GetScreenWidth() / 2 - 120, 220}, 16, 2, true, DARKGRAY);
+
+            DrawRectangleRounded((Rectangle){screenWidth / 2 + 15, 114, GetScreenWidth() / 2 - 29, 51}, 0.01f, 1, Fade(DARKPURPLE, 0.2f));
+            DrawRectangleRoundedLines((Rectangle){screenWidth / 2 + 15, 115, GetScreenWidth() / 2 - 30, 50}, 0.1f, 1, 1, checkboxSelectedLLF);
+            DrawTextRec(font, llfAlgorithm, (Rectangle){screenWidth / 2 + 90, 118, GetScreenWidth() / 2 - 120, 220}, 16, 2, true, DARKGRAY);
+
+            DrawRectangleRounded((Rectangle){screenWidth / 2 + 15, 169, GetScreenWidth() / 2 - 29, 51}, 0.01f, 1, Fade(DARKPURPLE, 0.2f));
+            DrawRectangleRoundedLines((Rectangle){screenWidth / 2 + 15, 170, GetScreenWidth() / 2 - 30, 50}, 0.1f, 1, 1, checkboxSelectedDM);
+            DrawTextRec(font, dmAlgorithm, (Rectangle){screenWidth / 2 + 90, 185, GetScreenWidth() / 2 - 120, 220}, 16, 2, true, DARKGRAY);
+
+            //  Scheduling Algorithms Checkboxes
+            //-----------------------------------------------------------------------------------------
+            if (GuiCheckBox((Rectangle){30, 130, 20, 20}, "RM", checkboxRM))
+            {
+                checkboxEDF = false;
+                checkboxLST = false;
+                checkboxRM = true;
+                checkboxLFF = false;
+                checkboxDM = false;
+                checkboxSelectedRM = GOLD;
+                checkboxSelectedEDF = BLACK;
+                checkboxSelectedLST = BLACK;
+                checkboxSelectedLLF = BLACK;
+                checkboxSelectedDM = BLACK;
+                schedulingAlgortihm = "RM";
+                schedulingAlgortihmTxt = rmAlgorithm;
+            }
+            if (GuiCheckBox((Rectangle){30, 185, 20, 20}, "EDF", checkboxEDF))
+            {
+                checkboxEDF = true;
+                checkboxLST = false;
+                checkboxRM = false;
+                checkboxLFF = false;
+                checkboxDM = false;
+                checkboxSelectedRM = BLACK;
+                checkboxSelectedEDF = GOLD;
+                checkboxSelectedLST = BLACK;
+                checkboxSelectedLLF = BLACK;
+                checkboxSelectedDM = BLACK;
+                schedulingAlgortihm = "EDF";
+
+                schedulingAlgortihmTxt = edfAlgorithm;
+            }
+            if (GuiCheckBox((Rectangle){30, 240, 20, 20}, "LST", checkboxLST))
+            {
+                checkboxEDF = false;
+                checkboxLST = true;
+                checkboxRM = false;
+                checkboxLFF = false;
+                checkboxDM = false;
+                checkboxSelectedRM = BLACK;
+                checkboxSelectedEDF = BLACK;
+                checkboxSelectedLST = GOLD;
+                checkboxSelectedLLF = BLACK;
+                checkboxSelectedDM = BLACK;
+                schedulingAlgortihm = "LST";
+
+                schedulingAlgortihmTxt = lstAlgorithm;
+            }
+
+            if (GuiCheckBox((Rectangle){screenWidth / 2 + 30, 130, 20, 20}, "LLF", checkboxLFF))
+            {
+                checkboxEDF = false;
+                checkboxLST = false;
+                checkboxRM = false;
+                checkboxLFF = true;
+                checkboxDM = false;
+                checkboxSelectedRM = BLACK;
+                checkboxSelectedEDF = BLACK;
+                checkboxSelectedLST = BLACK;
+                checkboxSelectedLLF = GOLD;
+                checkboxSelectedDM = BLACK;
+                schedulingAlgortihm = "LLF";
+
+                schedulingAlgortihmTxt = llfAlgorithm;
+            }
+            if (GuiCheckBox((Rectangle){screenWidth / 2 + 30, 185, 20, 20}, "DM", checkboxDM))
+            {
+                checkboxEDF = false;
+                checkboxLST = false;
+                checkboxRM = false;
+                checkboxLFF = false;
+                checkboxDM = true;
+                checkboxSelectedRM = BLACK;
+                checkboxSelectedEDF = BLACK;
+                checkboxSelectedLST = BLACK;
+                checkboxSelectedLLF = BLACK;
+                checkboxSelectedDM = GOLD;
+                schedulingAlgortihm = "DM";
+                schedulingAlgortihmTxt = dmAlgorithm;
+            }
+            //SCHEDULABILITY test Button
+            //------------------------------------------------------------------------------------
 
             escTest = GuiButton((Rectangle){15, 590, 150, 50}, "TEST SCHEDULABILITY");
             if (escTest)
@@ -305,24 +310,23 @@ int main(void)
             {
                 testresult = schedtest(droppedFiles[0]);
             }
-            if (showtest)
+            if (showtest && IsFileDropped() && strcmp("", schedulingAlgortihm) != 0)
             {
-                DrawRectangle(14, 260, 175, 60, Fade(DARKBLUE, 0.2f));
-                DrawRectangleLinesEx((Rectangle){15, 260, 175, 60}, 2, BLACK);
-                DrawTextEx(font, TextFormat("%03.04f", testresult), (Vector2){25, 265}, 50, 2, BLACK);
+                DrawRectangle(14, 280, 175, 60, Fade(DARKBLUE, 0.2f));
+                DrawRectangleLinesEx((Rectangle){15, 280, 175, 60}, 2, BLACK);
+                DrawTextEx(font, TextFormat("%03.04f", testresult), (Vector2){25, 285}, 50, 2, BLACK);
                 if (checkboxEDF)
-                    DrawTextEx(font, edftesttxt, (Vector2){195, 295}, 24, 2, BLACK);
+                    DrawTextEx(font, edftesttxt, (Vector2){195, 315}, 24, 2, BLACK);
                 else if (checkboxRM)
                 {
                     rmtesttxt = ntasks * (pow(2.0, (1.0 / ntasks)) - 1.0);
-                    DrawTextEx(font, TextFormat("if <= %02.02f, then the system is schedulable with RM", rmtesttxt), (Vector2){195, 295}, 24, 2, BLACK);
+                    DrawTextEx(font, TextFormat("if <= %02.02f, then the system is schedulable with RM", rmtesttxt), (Vector2){195, 315}, 24, 2, BLACK);
                 }
             }
         }
         //Run Button && Close button
         //------------------------------------------------------------------------------------
         runtime = atoi(runTimeMS);
-
         if (GuiButton((Rectangle){GetScreenWidth() - 115, 590, 100, 50}, "RUN") && IsFileDropped() && runtime > 0 && strcmp("", schedulingAlgortihm) != 0)
         {
 
@@ -376,10 +380,15 @@ int main(void)
         //-----------------------------------------------------------------------------------
         if (running)
         {
+            //choosen algorithm
+            DrawRectangleRounded((Rectangle){screenWidth / 8 - 30, 115, screenWidth * 0.8 - 30, 130}, 0.1f, 1, Fade(DARKGRAY, 0.3f));
+            DrawTextEx(font, schedulingAlgortihm, (Vector2){screenWidth / 2 - 40, 130}, 40, 2, BLACK);
+            DrawTextRec(font, schedulingAlgortihmTxt, (Rectangle){screenWidth / 8, 160, screenWidth * 0.8 - 35, 245}, 32, 2, true, BLACK);
+            //simulation draw
             Rectangle view = GuiScrollPanel(panelRec, panelContentRec, &panelScroll);
             BeginScissorMode(view.x, view.y, view.width, view.height);
             DrawRectangle(14, 255, GetScreenWidth() * runtimesimu, 495 - 110, Fade(LIGHTGRAY, 0.2f));
-            DrawRectangleLinesEx((Rectangle){15, 255, GetScreenWidth() * runtimesimu, 495 - 110}, 2, BLACK);
+            DrawRectangleLinesEx((Rectangle){14, 254, (GetScreenWidth() - 29), 388}, 4, BLACK);
             for (int i = 0; i < uniqueelements; i++)
             {
                 DrawTextEx(font, TextFormat("Task %02i", i + 1), (Vector2){20 + panelRec.x + panelScroll.x, 80 + 80 * i + panelRec.y + panelScroll.y}, 20, 2, BLACK);
@@ -398,7 +407,7 @@ int main(void)
                 DrawTextEx(font, TextFormat("%02i", 5 * i), (Vector2){122 + 20 * i * 5 + panelRec.x + panelScroll.x, 260 * ntasks + panelRec.y + panelScroll.y}, 16, 2, BLACK);
                 DrawLine(120 + 20 * i * 5 + panelRec.x + panelScroll.x, 100 + panelRec.y + panelScroll.y, 120 + 20 * i * 5 + panelRec.x + panelScroll.x, 270 * ntasks + panelRec.y + panelScroll.y, BLACK);
             }
-            closeButton = GuiButton((Rectangle){GetScreenWidth() - 115, 255, 100, 50}, "CLOSE");
+            closeButton = GuiButton((Rectangle){GetScreenWidth() - 119, 258, 100, 50}, "CLOSE");
         }
         EndScissorMode();
         //END DRAWING
