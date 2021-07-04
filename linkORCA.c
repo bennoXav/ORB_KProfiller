@@ -27,7 +27,7 @@
 #define MAX_COLORS_COUNT 21
 int UniqueElements(int arr1[], int n);
 int *outputOrca(char *fileoutput, int runtime);
-double schedtest(char *fileoutput);
+double schedtest(char *fileoutput, int typeoftest);
 char **droppedFiles = {0};
 char **fileoutput = {0};
 size_t nelementos = 0;
@@ -76,6 +76,8 @@ int main(void)
     int count = 0;
     char *schedulingAlgortihm = "";
     char *schedulingAlgortihmTxt = "";
+    //performance analysis
+    double performanceAnalysisResult = 0;
     //run time text box
     char runTimeMS[MAX_INPUT_CHARS + 1] = "\0"; // NOTE: One extra space required for line ending char '\0'
     int letterCount = 0;
@@ -308,7 +310,7 @@ int main(void)
             }
             if (escTest && IsFileDropped() && strcmp("", schedulingAlgortihm) != 0)
             {
-                testresult = schedtest(droppedFiles[0]);
+                testresult = schedtest(droppedFiles[0], 1);
             }
             if (showtest && IsFileDropped() && strcmp("", schedulingAlgortihm) != 0)
             {
@@ -369,6 +371,7 @@ int main(void)
             closeButton = false;
             running = true;
             strcpy(orcachamada, "");
+            performanceAnalysisResult = schedtest(droppedFiles[0], 2) * ((ntasks) * (log2(ntasks)));
         }
         if (closeButton)
         {
@@ -382,8 +385,9 @@ int main(void)
         {
             //choosen algorithm
             DrawRectangleRounded((Rectangle){screenWidth / 8 - 30, 115, screenWidth * 0.8 - 30, 130}, 0.1f, 1, Fade(DARKGRAY, 0.3f));
-            DrawTextEx(font, schedulingAlgortihm, (Vector2){screenWidth / 2 - 40, 130}, 40, 2, BLACK);
-            DrawTextRec(font, schedulingAlgortihmTxt, (Rectangle){screenWidth / 8, 160, screenWidth * 0.8 - 35, 245}, 32, 2, true, BLACK);
+            DrawTextEx(font, schedulingAlgortihm, (Vector2){screenWidth / 2 - 40, 125}, 40, 2, BLACK);
+            DrawTextRec(font, schedulingAlgortihmTxt, (Rectangle){screenWidth / 8, 160, screenWidth * 0.8 - 35, 245}, 22, 2, true, BLACK);
+            DrawTextRec(font, TextFormat("Performance Analysis: %02.02f ", performanceAnalysisResult), (Rectangle){screenWidth / 8, 194, screenWidth * 0.8 - 35, 245}, 22, 2, true, BLACK);
             //simulation draw
             Rectangle view = GuiScrollPanel(panelRec, panelContentRec, &panelScroll);
             BeginScissorMode(view.x, view.y, view.width, view.height);
@@ -404,8 +408,8 @@ int main(void)
             }
             for (int i = 0; i <= runtime / 5; i++)
             {
-                DrawTextEx(font, TextFormat("%02i", 5 * i), (Vector2){122 + 20 * i * 5 + panelRec.x + panelScroll.x, 260 * ntasks + panelRec.y + panelScroll.y}, 16, 2, BLACK);
-                DrawLine(120 + 20 * i * 5 + panelRec.x + panelScroll.x, 100 + panelRec.y + panelScroll.y, 120 + 20 * i * 5 + panelRec.x + panelScroll.x, 270 * ntasks + panelRec.y + panelScroll.y, BLACK);
+                DrawTextEx(font, TextFormat("%02i", 5 * i), (Vector2){122 + 20 * i * 5 + panelRec.x + panelScroll.x, 88 * ntasks + panelRec.y + panelScroll.y}, 16, 2, BLACK);
+                DrawLine(120 + 20 * i * 5 + panelRec.x + panelScroll.x, 100 + panelRec.y + panelScroll.y, 120 + 20 * i * 5 + panelRec.x + panelScroll.x, 90 * ntasks + panelRec.y + panelScroll.y, BLACK);
             }
             closeButton = GuiButton((Rectangle){GetScreenWidth() - 119, 258, 100, 50}, "CLOSE");
         }
@@ -487,7 +491,7 @@ int *outputOrca(char *fileoutput, int runtime)
     return 0;
 }
 
-double schedtest(char *fileoutput)
+double schedtest(char *fileoutput, int typeoftest)
 {
     double i = 0;
     double n = 0;
@@ -516,8 +520,14 @@ double schedtest(char *fileoutput)
             token = strtok(NULL, " ");
             token = strtok(NULL, " ");
             m = strtod(token, &ptr);
-
-            i += n / m;
+            if (typeoftest == 1)
+            {
+                i += n / m;
+            }
+            else if (typeoftest == 2)
+            {
+                i += runtime / m;
+            }
             fgets(line_buf, 255, file);
             while (strstr(token, "#") == NULL)
             {
@@ -533,7 +543,14 @@ double schedtest(char *fileoutput)
                 token = strtok(NULL, " ");
                 token = strtok(NULL, " ");
                 m = strtod(token, &ptr);
-                i += n / m;
+                if (typeoftest == 1)
+                {
+                    i += n / m;
+                }
+                else if (typeoftest == 2)
+                {
+                    i += runtime / m;
+                }
                 ntasks++;
                 fgets(line_buf, 255, file);
             }
