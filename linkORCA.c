@@ -28,6 +28,7 @@
 int UniqueElements(int arr1[], int n);
 int *outputOrca(char *fileoutput, int runtime);
 double schedtest(char *fileoutput, int typeoftest);
+int largest(int arr[], int n);
 char **droppedFiles = {0};
 char **fileoutput = {0};
 size_t nelementos = 0;
@@ -66,7 +67,7 @@ int main(void)
     char *edfAlgorithm = "The earlier the deadline of a task, the higher is its priority.";
     char *rmAlgorithm = "The higher the frequency (1/period) of a task, the higher is its priority.";
     char *lstAlgorithm = "The least amount of slack time of a task, the higher is its priority.";
-    char *llfAlgorithm = "The least amount of laxity time (dl - (p + rt)) of a task, the higher is its priority.";
+    char *llfAlgorithm = "The least amount of laxity time (deadline - capacity) of a task, the higher is its priority.";
     char *dmAlgorithm = "The latest the deadline of a task, the higher is its priority.";
     bool checkboxEDF = false;
     bool checkboxLST = false;
@@ -331,33 +332,6 @@ int main(void)
         runtime = atoi(runTimeMS);
         if (GuiButton((Rectangle){GetScreenWidth() - 115, 590, 100, 50}, "RUN") && IsFileDropped() && runtime > 0 && strcmp("", schedulingAlgortihm) != 0)
         {
-
-            if (runtime > 50)
-                runtimesimu = (runtime / 50) + 1;
-            else
-                runtimesimu = 1;
-            panelContentRec.width = GetScreenWidth() * runtimesimu;
-
-            if (uniqueelements >= 4 && uniqueelements % 4 == 0)
-            {
-                ntasks = (uniqueelements / 4);
-            }
-            else if (uniqueelements >= 4 && uniqueelements % 4 != 0)
-            {
-                ntasks = (uniqueelements / 4) + 1;
-            }
-            else
-            {
-                ntasks = 1;
-            }
-            int heightpanelcr;
-
-            if (uniqueelements < 4)
-                heightpanelcr = 4;
-            else
-                heightpanelcr = uniqueelements;
-            panelContentRec.height = 94 * heightpanelcr;
-
             strcpy(orcachamada, "C:/Users/jbweb/Orca_Bolsa/orca-rt-bench/bin/orca-rt-scheduler.exe");
             strcat(orcachamada, " ");
             strcat(orcachamada, runTimeMS);
@@ -370,6 +344,33 @@ int main(void)
             outputOrca(ptr, runtime);
             closeButton = false;
             running = true;
+
+            //updates the scrollbar width
+            if (runtime > 50)
+                runtimesimu = (runtime / 50) + 1;
+            else
+                runtimesimu = 1;
+            panelContentRec.width = GetScreenWidth() * runtimesimu;
+            uniqueelements = largest(testeinput, (sizeof(testeinput) / sizeof(testeinput[0])));
+            if (uniqueelements >= 4 && uniqueelements % 4 == 0)
+            {
+                ntasks = (uniqueelements / 4);
+            }
+            else if (uniqueelements >= 4 && uniqueelements % 4 != 0)
+            {
+                ntasks = (uniqueelements / 4) + 1;
+            }
+            else
+            {
+                ntasks = 1;
+            }
+            //updates the scrollbar height
+            int heightpanelcr;
+            if (uniqueelements < 4)
+                heightpanelcr = 4;
+            else
+                heightpanelcr = uniqueelements;
+            panelContentRec.height = 94 * heightpanelcr;
             strcpy(orcachamada, "");
             performanceAnalysisResult = schedtest(droppedFiles[0], 2) * ((ntasks) * (log2(ntasks)));
         }
@@ -396,7 +397,7 @@ int main(void)
             for (int i = 0; i < uniqueelements; i++)
             {
                 DrawTextEx(font, TextFormat("Task %02i", i + 1), (Vector2){20 + panelRec.x + panelScroll.x, 80 + 80 * i + panelRec.y + panelScroll.y}, 20, 2, BLACK);
-                DrawLine(120 + panelRec.x + panelScroll.x, 100 + 80 * i + panelRec.y + panelScroll.y, ((GetScreenWidth() - 29) * runtimesimu) + panelRec.x + panelScroll.x, 100 + 80 * i + panelRec.y + panelScroll.y, BLACK);
+                DrawLine(120 + panelRec.x + panelScroll.x, 100 + 80 * i + panelRec.y + panelScroll.y, 120 + 20 * runtime + panelRec.x + panelScroll.x, 100 + 80 * i + panelRec.y + panelScroll.y, BLACK);
             }
             for (int i = 0; i < (sizeof(testeinput) / sizeof(testeinput[0])); i++)
             {
@@ -408,8 +409,8 @@ int main(void)
             }
             for (int i = 0; i <= runtime / 5; i++)
             {
-                DrawTextEx(font, TextFormat("%02i", 5 * i), (Vector2){122 + 20 * i * 5 + panelRec.x + panelScroll.x, 88 * ntasks + panelRec.y + panelScroll.y}, 16, 2, BLACK);
-                DrawLine(120 + 20 * i * 5 + panelRec.x + panelScroll.x, 100 + panelRec.y + panelScroll.y, 120 + 20 * i * 5 + panelRec.x + panelScroll.x, 90 * ntasks + panelRec.y + panelScroll.y, BLACK);
+                DrawTextEx(font, TextFormat("%02i", 5 * i), (Vector2){122 + 20 * i * 5 + panelRec.x + panelScroll.x, 88 * uniqueelements + panelRec.y + panelScroll.y}, 16, 2, BLACK);
+                DrawLine(120 + 20 * i * 5 + panelRec.x + panelScroll.x, 100 + panelRec.y + panelScroll.y, 120 + 20 * i * 5 + panelRec.x + panelScroll.x, 90 * uniqueelements + panelRec.y + panelScroll.y, BLACK);
             }
             closeButton = GuiButton((Rectangle){GetScreenWidth() - 119, 258, 100, 50}, "CLOSE");
         }
@@ -490,7 +491,7 @@ int *outputOrca(char *fileoutput, int runtime)
     fclose(file);
     return 0;
 }
-
+//teste de escalonabilidade
 double schedtest(char *fileoutput, int typeoftest)
 {
     double i = 0;
@@ -507,7 +508,6 @@ double schedtest(char *fileoutput, int typeoftest)
     }
     while (fgets(line_buf, 255, file) != NULL)
     {
-
         token = strtok(line_buf, " ");
         if (strstr(token, "#id") != NULL)
         {
@@ -558,4 +558,21 @@ double schedtest(char *fileoutput, int typeoftest)
         }
     }
     return i;
+}
+//encontra a task de maior id dentro do output.orca
+int largest(int arr[], int n)
+{
+    int i;
+
+    // Initialize maximum element
+    int max = arr[0];
+
+    // Traverse array elements
+    // from second and compare
+    // every element with current max
+    for (i = 1; i < n; i++)
+        if (arr[i] > max)
+            max = arr[i];
+
+    return max;
 }
