@@ -49,6 +49,8 @@ int main(void)
     const int screenWidth = 1200;
     const int screenHeight = 650;
     InitWindow(screenWidth, screenHeight, "ORCA-RT-BENCH: Kprofiller");
+    Image icon = LoadImage("resources/none_16x16.png");
+    SetWindowIcon(icon);
     //font arial
     Font font = LoadFont("resources/arial.ttf");
     //get current path
@@ -56,7 +58,6 @@ int main(void)
     if (getcwd(ptr, sizeof(ptr)) != NULL)
     {
         strcat(ptr, "\\output.orca");
-        printf("Current working dir: %s\n", ptr);
     }
     //checkboxes
     Color checkboxSelectedRM = BLACK;
@@ -330,49 +331,50 @@ int main(void)
         //Run Button && Close button
         //------------------------------------------------------------------------------------
         runtime = atoi(runTimeMS);
-        if (GuiButton((Rectangle){GetScreenWidth() - 115, 590, 100, 50}, "RUN") && IsFileDropped() && runtime > 0 && strcmp("", schedulingAlgortihm) != 0)
+        if (!running)
         {
-            strcpy(orcachamada, "C:/Users/jbweb/Orca_Bolsa/orca-rt-bench/bin/orca-rt-scheduler.exe");
-            strcat(orcachamada, " ");
-            strcat(orcachamada, runTimeMS);
-            strcat(orcachamada, " ");
-            strcat(orcachamada, droppedFiles[0]);
-            strcat(orcachamada, " ");
-            strcat(orcachamada, schedulingAlgortihm);
-            printf(orcachamada);
-            system(orcachamada);
-            outputOrca(ptr, runtime);
-            closeButton = false;
-            running = true;
+            if (GuiButton((Rectangle){GetScreenWidth() - 115, 590, 100, 50}, "RUN") && IsFileDropped() && runtime > 0 && strcmp("", schedulingAlgortihm) != 0)
+            {
+                strcpy(orcachamada, "C:/Users/jbweb/Orca_Bolsa/orca-rt-bench/bin/orca-rt-scheduler.exe");
+                strcat(orcachamada, " ");
+                strcat(orcachamada, runTimeMS);
+                strcat(orcachamada, " ");
+                strcat(orcachamada, droppedFiles[0]);
+                strcat(orcachamada, " ");
+                strcat(orcachamada, schedulingAlgortihm);
+                printf(orcachamada);
+                system(orcachamada);
+                outputOrca(ptr, runtime);
+                closeButton = false;
+                running = true;
 
-            //updates the scrollbar width
-            if (runtime > 50)
-                runtimesimu = (runtime / 50) + 1;
-            else
-                runtimesimu = 1;
-            panelContentRec.width = GetScreenWidth() * runtimesimu;
-            uniqueelements = largest(testeinput, (sizeof(testeinput) / sizeof(testeinput[0])));
-            if (uniqueelements >= 4 && uniqueelements % 4 == 0)
-            {
-                ntasks = (uniqueelements / 4);
+                //updates the scrollbar width
+                panelContentRec.width = 160 + 20 * runtime;
+                uniqueelements = largest(testeinput, (sizeof(testeinput) / sizeof(testeinput[0])));
+                if (uniqueelements >= 4 && uniqueelements % 4 == 0)
+                {
+                    ntasks = (uniqueelements / 4);
+                }
+                else if (uniqueelements >= 4 && uniqueelements % 4 != 0)
+                {
+                    ntasks = (uniqueelements / 4) + 1;
+                }
+                else
+                {
+                    ntasks = 1;
+                }
+                //updates the scrollbar height
+                int heightpanelcr;
+                if (uniqueelements < 4)
+                    heightpanelcr = 4;
+                else
+                    heightpanelcr = uniqueelements + 1;
+                panelContentRec.height = 94 * heightpanelcr;
+                strcpy(orcachamada, "");
+                printf("%d/n", uniqueelements);
+                printf("%02.02f", ((uniqueelements) * (log2(uniqueelements))));
+                performanceAnalysisResult = schedtest(droppedFiles[0], 2) * ((uniqueelements) * (log2(uniqueelements)));
             }
-            else if (uniqueelements >= 4 && uniqueelements % 4 != 0)
-            {
-                ntasks = (uniqueelements / 4) + 1;
-            }
-            else
-            {
-                ntasks = 1;
-            }
-            //updates the scrollbar height
-            int heightpanelcr;
-            if (uniqueelements < 4)
-                heightpanelcr = 4;
-            else
-                heightpanelcr = uniqueelements;
-            panelContentRec.height = 94 * heightpanelcr;
-            strcpy(orcachamada, "");
-            performanceAnalysisResult = schedtest(droppedFiles[0], 2) * ((ntasks) * (log2(ntasks)));
         }
         if (closeButton)
         {
@@ -394,23 +396,27 @@ int main(void)
             BeginScissorMode(view.x, view.y, view.width, view.height);
             DrawRectangle(14, 255, GetScreenWidth() * runtimesimu, 495 - 110, Fade(LIGHTGRAY, 0.2f));
             DrawRectangleLinesEx((Rectangle){14, 254, (GetScreenWidth() - 29), 388}, 4, BLACK);
+
+            DrawTextEx(font, "Scheduler", (Vector2){20 + panelRec.x + panelScroll.x, 80 + panelRec.y + panelScroll.y}, 20, 2, BLACK);
+            DrawLine(120 + panelRec.x + panelScroll.x, 100 + panelRec.y + panelScroll.y, 120 + 20 * runtime + panelRec.x + panelScroll.x, 100 + panelRec.y + panelScroll.y, BLACK);
+
             for (int i = 0; i < uniqueelements; i++)
             {
-                DrawTextEx(font, TextFormat("Task %02i", i + 1), (Vector2){20 + panelRec.x + panelScroll.x, 80 + 80 * i + panelRec.y + panelScroll.y}, 20, 2, BLACK);
-                DrawLine(120 + panelRec.x + panelScroll.x, 100 + 80 * i + panelRec.y + panelScroll.y, 120 + 20 * runtime + panelRec.x + panelScroll.x, 100 + 80 * i + panelRec.y + panelScroll.y, BLACK);
+                DrawTextEx(font, TextFormat("Task %02i", i + 1), (Vector2){20 + panelRec.x + panelScroll.x, 160 + 80 * i + panelRec.y + panelScroll.y}, 20, 2, BLACK);
+                DrawLine(120 + panelRec.x + panelScroll.x, 180 + 80 * i + panelRec.y + panelScroll.y, 120 + 20 * runtime + panelRec.x + panelScroll.x, 180 + 80 * i + panelRec.y + panelScroll.y, BLACK);
             }
-            for (int i = 0; i < (sizeof(testeinput) / sizeof(testeinput[0])); i++)
+            for (int i = 0; i < runtime; i++)
             {
-                if (testeinput[i] > 0 && testeinput[i] < 100)
+                if (testeinput[i] < 100)
                 {
-                    DrawRectangle(120 + 20 * i + panelRec.x + panelScroll.x, 80 + 80 * (testeinput[i] - 1) + panelRec.y + panelScroll.y, 20, 20, colors[testeinput[i]]);
-                    DrawRectangleLinesEx((Rectangle){120 + 20 * i + panelRec.x + panelScroll.x, 80 + 80 * (testeinput[i] - 1) + panelRec.y + panelScroll.y, 20, 20}, 1, BLACK);
+                    DrawRectangle(120 + 20 * i + panelRec.x + panelScroll.x, 80 + 80 * testeinput[i] + panelRec.y + panelScroll.y, 20, 20, colors[testeinput[i]]);
+                    DrawRectangleLinesEx((Rectangle){120 + 20 * i + panelRec.x + panelScroll.x, 80 + 80 * testeinput[i] + panelRec.y + panelScroll.y, 20, 20}, 1, BLACK);
                 }
             }
             for (int i = 0; i <= runtime / 5; i++)
             {
-                DrawTextEx(font, TextFormat("%02i", 5 * i), (Vector2){122 + 20 * i * 5 + panelRec.x + panelScroll.x, 88 * uniqueelements + panelRec.y + panelScroll.y}, 16, 2, BLACK);
-                DrawLine(120 + 20 * i * 5 + panelRec.x + panelScroll.x, 100 + panelRec.y + panelScroll.y, 120 + 20 * i * 5 + panelRec.x + panelScroll.x, 90 * uniqueelements + panelRec.y + panelScroll.y, BLACK);
+                DrawTextEx(font, TextFormat("%02i", 5 * i), (Vector2){122 + 20 * i * 5 + panelRec.x + panelScroll.x, 32 + 80 * (uniqueelements + 1) + panelRec.y + panelScroll.y}, 16, 2, BLACK);
+                DrawLine(120 + 20 * i * 5 + panelRec.x + panelScroll.x, 100 + panelRec.y + panelScroll.y, 120 + (20 * i * 5) + panelRec.x + panelScroll.x, 48 + 80 * (uniqueelements + 1) + panelRec.y + panelScroll.y, BLACK);
             }
             closeButton = GuiButton((Rectangle){GetScreenWidth() - 119, 258, 100, 50}, "CLOSE");
         }
