@@ -29,6 +29,7 @@ int UniqueElements(int arr1[], int n);
 int *outputOrca(char *fileoutput, int runtime);
 double schedtest(char *fileoutput, int typeoftest);
 int largest(int arr[], int n);
+
 char **droppedFiles = {0};
 char **fileoutput = {0};
 size_t nelementos = 0;
@@ -42,6 +43,8 @@ char ptr[PATH_MAX];
 int testeinput[10000];
 int heightpanelcr = 1;
 char orcachamada[200];
+int missedddl[3][1024];
+int missed = 0;
 int main(void)
 {
     // Initialization
@@ -101,10 +104,17 @@ int main(void)
     bool showtest = false;
     char *edftesttxt = "if < 1, then the system is schedulable with EDF";
     double rmtesttxt;
-    //scrollbar area
+    //simulation scrollbar area
     Rectangle panelRec = {14, 254, (GetScreenWidth() - 29), 388};
     Rectangle panelContentRec = {14, 255, GetScreenWidth() * runtimesimu, 96 * heightpanelcr};
     Vector2 panelScroll = {99, 0};
+    //Deadlines missed scrollbar area
+    Rectangle panelRec2 = {14, 114, screenWidth / 2 - 31, 129};
+    Rectangle panelContentRec2 = {15, 115, screenWidth / 2 - 43, 600};
+    Vector2 panelScroll2 = {99, 0};
+    //deadlines missed string
+    malloc(sizeof(missedddl));
+
     SetTargetFPS(60);
     //--------------------------------------------------------------------------------------
     // Main game loop
@@ -349,7 +359,11 @@ int main(void)
                 running = true;
 
                 //updates the scrollbar width
-                panelContentRec.width = 160 + 20 * runtime;
+                if (runtime <= 51)
+                    panelContentRec.width = GetScreenWidth() - 29;
+                else
+                    panelContentRec.width = 130 + 20 * runtime;
+
                 uniqueelements = largest(testeinput, (sizeof(testeinput) / sizeof(testeinput[0])));
                 if (uniqueelements >= 4 && uniqueelements % 4 == 0)
                 {
@@ -370,10 +384,14 @@ int main(void)
                 else
                     heightpanelcr = uniqueelements + 1;
                 panelContentRec.height = 94 * heightpanelcr;
+
+                if (missed < 3)
+                    panelContentRec2.height = 129;
+                else
+                    panelContentRec2.height = 60 + (missed)*25;
+
                 strcpy(orcachamada, "");
-                printf("%d/n", uniqueelements);
-                printf("%02.02f", ((uniqueelements) * (log2(uniqueelements))));
-                performanceAnalysisResult = schedtest(droppedFiles[0], 2) * ((uniqueelements) * (log2(uniqueelements)));
+                performanceAnalysisResult = (schedtest(droppedFiles[0], 2) + runtime / 1) * ((uniqueelements) * (log2(uniqueelements)) + 4);
             }
         }
         if (closeButton)
@@ -387,10 +405,20 @@ int main(void)
         if (running)
         {
             //choosen algorithm
-            DrawRectangleRounded((Rectangle){screenWidth / 8 - 30, 115, screenWidth * 0.8 - 30, 130}, 0.1f, 1, Fade(DARKGRAY, 0.3f));
-            DrawTextEx(font, schedulingAlgortihm, (Vector2){screenWidth / 2 - 40, 125}, 40, 2, BLACK);
-            DrawTextRec(font, schedulingAlgortihmTxt, (Rectangle){screenWidth / 8, 160, screenWidth * 0.8 - 35, 245}, 22, 2, true, BLACK);
-            DrawTextRec(font, TextFormat("Performance Analysis: %02.02f ", performanceAnalysisResult), (Rectangle){screenWidth / 8, 194, screenWidth * 0.8 - 35, 245}, 22, 2, true, BLACK);
+            DrawRectangleRounded((Rectangle){screenWidth / 2 + 15, 115, screenWidth / 2 - 30, 130}, 0.1f, 1, Fade(DARKGRAY, 0.3f));
+            DrawTextEx(font, schedulingAlgortihm, (Vector2){screenWidth - (screenWidth / 4) - 15, 125}, 40, 2, BLACK);
+            DrawTextRec(font, schedulingAlgortihmTxt, (Rectangle){(screenWidth - screenWidth / 2) + 30, 170, screenWidth / 2 - 80, 245}, 18, 2, true, BLACK);
+            DrawTextRec(font, TextFormat("Performance Analysis: %02.02f ", performanceAnalysisResult), (Rectangle){(screenWidth - screenWidth / 2) + 30, 200, (screenWidth - screenWidth / 2) - 35, 245}, 18, 2, true, BLACK);
+            //deadlines missed
+            Rectangle view2 = GuiScrollPanel(panelRec2, panelContentRec2, &panelScroll2);
+            BeginScissorMode(view2.x, view2.y, view2.width, view2.height);
+            DrawRectangleRounded((Rectangle){15, 115, screenWidth / 2 - 30, 130}, 0.1f, 1, Fade(DARKGRAY, 0.3f));
+            DrawTextEx(font, "Missed Deadlines", (Vector2){20, 10 + panelRec2.y + panelScroll2.y}, 20, 2, BLACK);
+            for (int i = 0; i < missed; i++)
+            {
+                DrawTextEx(font, TextFormat("task [%d] - deadline [%d] violated - task ended at time unit = [%d]", missedddl[0][i], missedddl[1][i], missedddl[2][i]), (Vector2){20, 40 + 30 * i + panelRec2.y + panelScroll2.y}, 16, 2, BLACK);
+            }
+            EndScissorMode();
             //simulation draw
             Rectangle view = GuiScrollPanel(panelRec, panelContentRec, &panelScroll);
             BeginScissorMode(view.x, view.y, view.width, view.height);
@@ -472,6 +500,9 @@ int *outputOrca(char *fileoutput, int runtime)
     int i = 0;
     char line_buf[255];
     char *token;
+    char *deadline = 0;
+    char *finish = 0;
+
     FILE *file = fopen(fileoutput, "r");
     if (file == NULL)
     {
@@ -481,19 +512,32 @@ int *outputOrca(char *fileoutput, int runtime)
     while (fgets(line_buf, 255, file) != NULL)
     {
         if (i == runtime)
-        {
             break;
-        }
+
         token = strtok(line_buf, " ");
-        if (atoi(token) < 1000)
+        if (atoi(token) < 50)
         {
             testeinput[i] = atoi(token);
             i++;
         }
+        if (i > 1 && testeinput[i - 1] != testeinput[i - 2] && (atoi(deadline) < atoi(finish)))
+        {
+            missedddl[0][missed] = testeinput[i - 2];
+            missedddl[1][missed] = atoi(deadline);
+            missedddl[2][missed] = atoi(finish);
+            missed++;
+        }
+        token = strtok(NULL, " ");
+        token = strtok(NULL, " ");
+        deadline = strtok(NULL, " ");
+        token = strtok(NULL, " ");
+        token = strtok(NULL, " ");
+        token = strtok(NULL, " ");
+        finish = strtok(NULL, " ");
     }
+    printf("\n%d\n", missed);
     nelementos = i;
     uniqueelements = UniqueElements(testeinput, nelementos);
-
     fclose(file);
     return 0;
 }
@@ -569,16 +613,9 @@ double schedtest(char *fileoutput, int typeoftest)
 int largest(int arr[], int n)
 {
     int i;
-
-    // Initialize maximum element
     int max = arr[0];
-
-    // Traverse array elements
-    // from second and compare
-    // every element with current max
     for (i = 1; i < n; i++)
         if (arr[i] > max)
             max = arr[i];
-
     return max;
 }
