@@ -112,8 +112,6 @@ int main(void)
     Rectangle panelRec2 = {14, 114, screenWidth / 2 - 31, 129};
     Rectangle panelContentRec2 = {15, 115, screenWidth / 2 - 43, 600};
     Vector2 panelScroll2 = {99, 0};
-    //deadlines missed string
-    malloc(sizeof(missedddl));
 
     SetTargetFPS(60);
     //--------------------------------------------------------------------------------------
@@ -388,7 +386,7 @@ int main(void)
                 if (missed < 3)
                     panelContentRec2.height = 129;
                 else
-                    panelContentRec2.height = 60 + (missed)*25;
+                    panelContentRec2.height = 60 + missed * 25;
 
                 strcpy(orcachamada, "");
                 performanceAnalysisResult = (schedtest(droppedFiles[0], 2) + runtime / 1) * ((uniqueelements) * (log2(uniqueelements)) + 4);
@@ -527,15 +525,10 @@ int *outputOrca(char *fileoutput, int runtime)
             missedddl[2][missed] = atoi(finish);
             missed++;
         }
-        token = strtok(NULL, " ");
-        token = strtok(NULL, " ");
         deadline = strtok(NULL, " ");
-        token = strtok(NULL, " ");
-        token = strtok(NULL, " ");
         token = strtok(NULL, " ");
         finish = strtok(NULL, " ");
     }
-    printf("\n%d\n", missed);
     nelementos = i;
     uniqueelements = UniqueElements(testeinput, nelementos);
     fclose(file);
